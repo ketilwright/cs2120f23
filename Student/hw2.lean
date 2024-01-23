@@ -200,8 +200,8 @@ of the type arguments are implicit and inferred.
 
 -- Implement glue_funs here
 def glue_funs {α β γ: Type } :
-  (β → γ ) → -- g
-  (α → β ) →  -- f
+  (β → γ ) →  -- function g
+  (α → β ) →  -- function f
     α  →     -- arg of type α
     γ
   | g, f, a => g ( f a)
