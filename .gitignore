@@ -1,6 +1,8 @@
 /build
 /lake-packages/*
-
+/.lake/*
 # mdBook output
 Instructor/DMT1/book/*
 Instructor/DMT1/src/*
+.lake/lakefile.olean.trace
+.lake/lakefile.olean
