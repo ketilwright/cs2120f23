@@ -310,10 +310,15 @@ Now rewrite your function using the type names,
 -/
 
 -- Here:
-def sum_elim {α γ β} (s: Sum α β) (f: α → γ) (g: β → γ) : γ :=
+def sum_elim_my_way {α γ β} (s: Sum α β) (f: α → γ) (g: β → γ) : γ :=
 match s with
 | Sum.inl a => f a
 | Sum.inr b => g b
+
+-- The course suggests not using named arguments in the definition
+def sum_elim {α γ β}: (Sum α β) → ( α → γ) → (β → γ) →  γ
+| (Sum.inl a), f, _  => f a
+| (Sum.inr b), _, g  => g b
 
 /-!
 You should now better understand how to program
@@ -332,5 +337,4 @@ they correspond directly to fundamental principles
 of logical reasoning. The until now hidden purpose
 of this assignment has been to warm you up to this
 profound idea.
--/
 -/
