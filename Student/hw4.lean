@@ -1,3 +1,4 @@
+
 /-!
 # Homework #4
 
@@ -210,7 +211,7 @@ def sum_assoc_reverse {α β γ: Type} : (α ⊕ β) ⊕ γ -> α ⊕ (β ⊕ γ
 
 #check sum_assoc_reverse
 
-/-
+
 /-!
 ## #6. Products Distribute Over Sums
 
@@ -226,9 +227,35 @@ either an *α* value and a *β* value, or an *α* value and
 a *γ* value.
  -/
 
- def prod_dist_sum {α β γ : Type} : _
- | _ => _
- | _ => _
+-- × precedence = 35
+-- ⊕ precedence = 30
+-- → precedence??
+def prod_dist_sum {α β γ : Type} : α × (β ⊕ γ) → α × β ⊕ α × γ
+ | Prod.mk a (Sum.inl s) => Sum.inl (Prod.mk a s)
+ | Prod.mk a (Sum.inr s) => Sum.inr (Prod.mk a s)
+
+#check prod_dist_sum -- ok
+
+def bread: Bool := true
+def cheese: Bool := false
+def jam : Bool := true
+
+
+def haveSW (p: Bool × Bool) : Bool := p.1 ∧ p.2
+
+#eval haveSW (bread, cheese) -- false
+#eval haveSW (bread, jam) -- true
+
+
+#eval bread ∧ (cheese ∨ jam) -- true
+#eval (bread ∧ cheese) ∨ (bread ∧ jam) -- true
+
+def breadAndCheese : Bool × (Bool ⊕ Bool) := (bread, Sum.inl cheese)
+#eval prod_dist_sum breadAndCheese
+def breadAndJam: Bool × (Bool ⊕ Bool) := (bread, Sum.inr jam)
+#eval prod_dist_sum breadAndJam
+
+
 
 /-!
 Does the preceding principle work in reverse? In other
@@ -241,6 +268,11 @@ any value of type *(α × β) ⊕ (α × γ)* into one of type
 -/
 
 -- Here:
+def prod_dist_sum_inv {α β γ: Type} : α × β ⊕ α × γ → α × (β ⊕ γ)
+| Sum.inl (a, b) => (a, Sum.inl b)
+| Sum.inr (a, g) => (a, Sum.inr g)
+
+---#check prod_dist_sum_inv -- {α β γ : Type} → α × β ⊕ α × γ → α × (β ⊕ γ)
 
 /-!
 In the forward (first) direction we can say that products
@@ -262,7 +294,14 @@ given values of those types as arguments, returns a value of
 type *wet*.
 -/
 
--- Here
+
+def its_wet {rain sprinkler wet : Type} (rs: rain ⊕ sprinkler) (f: rain → wet)  (g: sprinkler → wet) : wet :=
+match rs with
+| Sum.inl r => f r
+| Sum.inr s => g s
+
+
+
 
 /-!
 Now rewrite your function using the type names,
@@ -271,6 +310,10 @@ Now rewrite your function using the type names,
 -/
 
 -- Here:
+def sum_elim {α γ β} (s: Sum α β) (f: α → γ) (g: β → γ) : γ :=
+match s with
+| Sum.inl a => f a
+| Sum.inr b => g b
 
 /-!
 You should now better understand how to program
