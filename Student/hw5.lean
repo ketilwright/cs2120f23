@@ -277,7 +277,7 @@ def nat_le : Nat → Nat → Bool
 #eval nat_le 1 2
 #eval nat_le 2 1
 
-/-
+
 /-!
 ###  #5. Nat Number Addition
 
@@ -287,9 +287,7 @@ a natural number addition function.
 
 def add : Nat → Nat → Nat
 | m, 0 => m
-| m, (Nat.succ n') => _   -- hint: recursion
-
-
+| m, (Nat.succ n') => 1 + add m n'   -- hint: recursion
 -- Some test cases
 #reduce add 0 0   -- expect 0
 #reduce add 5 0   -- expect 5
@@ -297,22 +295,31 @@ def add : Nat → Nat → Nat
 #reduce add 5 4   -- expect 9
 #reduce add 4 5   -- expect 9
 #reduce add 5 5   -- expect 10
-
-
 /-!
 ###  #6. Natural Number Multiplication
-
 Complete this function definition to implement
 a natural number multiplication function. You
 can't use Lean's Nat multiplication function.
 Your implementation should use productively
-the add function you just definied. Wite a few
+the add function you just defined. Write a few
 test cases to show that it appears to be working.
  -/
 
+
 def mul : Nat → Nat → Nat
-| m, 0 => 0
-| m, (Nat.succ n') => add (_) (_)
+  | m, 0 => 0
+  -- If we called this with m = 5, n = 4, then the rhs of
+  -- => becomes mul 5 3 (to which we add 5). This will
+  -- recurse an additional 2x resulting in 5 + (5 + (5 + 5)
+  | m, (Nat.succ n') => add m (mul m n')
+
+-- #reduce mul 2 1
+-- #eval mul 0 0
+-- #eval mul 5 0
+-- #eval mul 0 5
+-- #eval mul 5 4
+-- #eval mul 4 5
+-- #eval mul 11 11
 
 /-!
 ### Sum Binary Nat Function Over Range 0 to n
@@ -329,8 +336,24 @@ sum of the squares of all the numbers from 0
 to and including n.
 -/
 
-def sum_f : (Nat → Nat) → Nat → Nat
-| f, 0 => _
-| f, n' + 1 => _
 
--/
+def sum_f : (Nat → Nat) → Nat → Nat
+| f, 0 => f 0
+| f, n' + 1 => f (n' + 1) + sum_f f (n')
+
+
+def square (n: Nat): Nat := n * n
+def iden (n: Nat) : Nat := n
+#reduce (sum_f square) 0 -- 0
+#reduce (sum_f square) 1 -- 1
+#reduce (sum_f square) 2 -- 5
+#reduce (sum_f square) 3 -- 14
+#reduce (sum_f square) 4 -- 30
+#reduce (sum_f square) 5 -- 55
+-- expect triangle #s
+#reduce sum_f iden 0 -- 0
+#reduce sum_f iden 1 -- 1
+#reduce sum_f iden 2 -- 3
+#reduce sum_f iden 3 -- 6
+#reduce sum_f iden 4 -- 10
+#reduce sum_f iden 5 -- 15
